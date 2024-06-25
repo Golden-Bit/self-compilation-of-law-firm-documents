@@ -5,8 +5,8 @@ from utilities import find_executable_by_partial_path
 
 
 #search_directory = "C:\\"  # Root directory (use with caution)
-search_directory = "\\"
-partial_path = "soffice.exe"
+search_directory = ""
+partial_path = "libreoffice"
 libreoffice_path = find_executable_by_partial_path(search_directory, partial_path)
 
 

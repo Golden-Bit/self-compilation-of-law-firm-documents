@@ -25,6 +25,6 @@ def find_executable_by_partial_path(start_directory, partial_path):
 
 
 # Example usage
-search_directory = "C:\\"  # Root directory (use with caution)
-partial_path = "soffice.exe"
-find_executable_by_partial_path(search_directory, partial_path)
+#search_directory = "C:\\"  # Root directory (use with caution)
+#partial_path = "soffice.exe"
+#find_executable_by_partial_path(search_directory, partial_path)

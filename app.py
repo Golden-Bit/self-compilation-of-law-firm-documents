@@ -1,4 +1,5 @@
 import os
+import subprocess
 import time
 
 import streamlit as st
@@ -14,6 +15,10 @@ from docx_to_pdf import convert_docx_to_pdf
 
 # Configurazione della pagina
 st.set_page_config(layout="wide")
+
+# Esegui locale-gen e update-locale
+subprocess.run(["sudo", "locale-gen", "it_IT.UTF-8"], check=True)
+subprocess.run(["sudo", "update-locale"], check=True)
 
 # Imposta la localizzazione italiana
 try:
