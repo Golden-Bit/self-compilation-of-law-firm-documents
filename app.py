@@ -16,7 +16,10 @@ from docx_to_pdf import convert_docx_to_pdf
 st.set_page_config(layout="wide")
 
 # Imposta la localizzazione italiana
-locale.setlocale(locale.LC_TIME, 'it_IT.UTF-8')
+try:
+    locale.setlocale(locale.LC_TIME, 'it_IT.UTF-8')
+except locale.Error:
+    st.warning("La localizzazione 'it_IT.UTF-8' non è disponibile. Verrà utilizzata la localizzazione predefinita.")
 
 # Credenziali salvate in locale
 USERNAME = "admin"
