@@ -329,7 +329,7 @@ def generate_all_documents(df_anagrafiche, df_fatture, df_pratiche, doc_path, da
         progress_bar = st.progress(0)
 
         for i, soggetto in enumerate(soggetti):
-            if True: #try:
+            try:
 
                 time_1 = time.time()
                 replacements = extract_relevant_fields(df_anagrafiche, soggetto, date_format_option)
@@ -338,8 +338,7 @@ def generate_all_documents(df_anagrafiche, df_fatture, df_pratiche, doc_path, da
                 residuo_ad_oggi = get_residuo_ad_oggi(identifier, df_pratiche)
                 numero_pratica = get_numero_pratica(identifier, df_pratiche)
                 numero_affido = get_numero_affido(identifier, df_pratiche)
-                replacements['[Residuo ad oggi 1]'] = residuo_ad_oggi
-                replacements['[Residuo ad oggi 2]'] = residuo_ad_oggi
+                replacements['[Residuo ad oggi]'] = residuo_ad_oggi
                 table_rows = extract_table_rows(identifier, df_fatture)
                 time_2 = time.time()
                 delta_1 = time_2 - time_1
@@ -379,8 +378,8 @@ def generate_all_documents(df_anagrafiche, df_fatture, df_pratiche, doc_path, da
                 os.remove(doc_filename)
                 os.remove(pdf_filename)
 
-            #except Exception as e:
-            #    st.error(f"Errore per il soggetto {soggetto}: {e}")
+            except Exception as e:
+                st.error(f"Errore per il soggetto {soggetto}: {e}")
 
             progress_bar.progress((i + 1) / num_soggetti)
 
