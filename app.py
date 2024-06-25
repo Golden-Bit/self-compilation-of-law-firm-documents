@@ -96,7 +96,8 @@ def extract_relevant_fields(df, soggetto, date_format):
         '[CONTRATTO]': contracts,
         '[Codice_Commerciale]': subset['Codice_Commerciale'].iloc[0],
         '[Codice_Soggetto]': soggetto,
-        '[Residuo ad oggi]': ' ',  # Placeholder
+        '[Residuo ad oggi 1]': ' ',  # Placeholder
+        '[Residuo ad oggi 2]': ' ',  # Placeholder
         'DATA': data_odierna,  # Data odierna formattata
     }
 
@@ -175,7 +176,7 @@ def replace_text(doc, replacements):
                         if old_text in paragraph.text:
                             for run in paragraph.runs:
                                 if old_text in run.text:
-                                    if old_text == "[Residuo ad oggi]":
+                                    if old_text == "[Residuo ad oggi 1]":
                                         run.text = run.text.replace(old_text, f"{new_text}")
                                         run.bold = True  # Applicare il grassetto
                                     else:
@@ -279,7 +280,8 @@ def generate_single_document(soggetto, df_anagrafiche, df_fatture, df_pratiche, 
         residuo_ad_oggi = get_residuo_ad_oggi(identifier, df_pratiche)
         numero_pratica = get_numero_pratica(identifier, df_pratiche)
         numero_affido = get_numero_affido(identifier, df_pratiche)
-        replacements['[Residuo ad oggi]'] = residuo_ad_oggi
+        replacements['[Residuo ad oggi 1]'] = residuo_ad_oggi
+        replacements['[Residuo ad oggi 2]'] = residuo_ad_oggi
         table_rows = extract_table_rows(identifier, df_fatture)
 
         output = update_document(doc_path, replacements, table_rows)
@@ -333,7 +335,8 @@ def generate_all_documents(df_anagrafiche, df_fatture, df_pratiche, doc_path, da
                 residuo_ad_oggi = get_residuo_ad_oggi(identifier, df_pratiche)
                 numero_pratica = get_numero_pratica(identifier, df_pratiche)
                 numero_affido = get_numero_affido(identifier, df_pratiche)
-                replacements['[Residuo ad oggi]'] = residuo_ad_oggi
+                replacements['[Residuo ad oggi 1]'] = residuo_ad_oggi
+                replacements['[Residuo ad oggi 2]'] = residuo_ad_oggi
                 table_rows = extract_table_rows(identifier, df_fatture)
                 time_2 = time.time()
                 delta_1 = time_2 - time_1
