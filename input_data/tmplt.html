@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preventivo Economico - Azienda Fotovoltaica</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header, .footer {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header {
+            border-bottom: 2px solid #ffa500;
+            padding-bottom: 10px;
+        }
+        .header h1 {
+            color: #ffa500;
+        }
+        .company-details, .client-details, .invoice-details {
+            margin-bottom: 20px;
+        }
+        .company-details p, .client-details p, .invoice-details p {
+            margin: 5px 0;
+        }
+        .section-title {
+            background-color: #ffa500;
+            color: #fff;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+        .items, .totals {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .items th, .items td, .totals th, .totals td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .items th {
+            background-color: #ffa500;
+            color: #fff;
+        }
+        .totals td {
+            text-align: right;
+        }
+        .totals td.label {
+            text-align: left;
+            background-color: #f4f4f4;
+        }
+        .note {
+            font-size: 0.9em;
+            color: #555;
+        }
+        .footer {
+            font-size: 0.9em;
+            color: #555;
+            border-top: 2px solid #ffa500;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Preventivo N. [Numero Preventivo]</h1>
+            <p>Data: [Data]</p>
+        </div>
+
+        <div class="company-details">
+            <p><strong>Azienda Fotovoltaica S.R.L</strong></p>
+            <p>Via Esempio, 123 - 00100 Roma (RM) - Italy</p>
+            <p>Tel. 0123456789 / 0987654321</p>
+            <p>Email: info@azienda.it | Pec: azienda@pec.it</p>
+            <p>P.IVA 01234567890 | Reg. imprese 123456</p>
+        </div>
+
+        <div class="section-title">Dettagli del Cliente</div>
+        <div class="client-details">
+            <p><strong>Destinatario:</strong> [Nome Azienda Cliente]</p>
+            <p><strong>Indirizzo:</strong> [Indirizzo Cliente]</p>
+            <p><strong>P.IVA:</strong> [P.IVA Cliente]</p>
+        </div>
+
+        <div class="section-title">Dettagli del Preventivo</div>
+        <div class="invoice-details">
+            <p><strong>Numero Preventivo:</strong> [Numero Preventivo]</p>
+            <p><strong>Data:</strong> [Data]</p>
+            <p><strong>Valido fino a:</strong> [Data Validità]</p>
+        </div>
+
+        <div class="section-title">Prodotti</div>
+        <table class="items">
+            <thead>
+                <tr>
+                    <th>Prodotto</th>
+                    <th>Codice</th>
+                    <th>Quantità</th>
+                    <th>Prezzo Unitario (€)</th>
+                    <th>Importo (€)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Modulo Fotovoltaico Policristallino 150W 12V</td>
+                    <td>NX150P</td>
+                    <td>2</td>
+                    <td>57,90</td>
+                    <td>115,80</td>
+                </tr>
+                <tr>
+                    <td>EP Solar Triron 3210N-2RS - Regolatore di Carica MPPT 30A 12/24V</td>
+                    <td>TRIRON3210N-2RS</td>
+                    <td>1</td>
+                    <td>73,20</td>
+                    <td>73,20</td>
+                </tr>
+                <tr>
+                    <td>Batteria Solare Ermetica "Prime" da 12V 150AH Deep Cycle</td>
+                    <td>PCA150-12</td>
+                    <td>2</td>
+                    <td>172,90</td>
+                    <td>345,80</td>
+                </tr>
+                <tr>
+                    <td>Coppia di Connettori MC4 per Pannelli Fotovoltaici</td>
+                    <td>MC4</td>
+                    <td>1</td>
+                    <td>1,54</td>
+                    <td>1,54</td>
+                </tr>
+                <!-- Add more items as needed -->
+            </tbody>
+        </table>
+
+        <div class="section-title">Riepilogo Totale</div>
+        <table class="totals">
+            <tr>
+                <td class="label"><strong>Totale Imponibile:</strong></td>
+                <td>[Totale Imponibile] €</td>
+            </tr>
+            <tr>
+                <td class="label"><strong>IVA 22%:</strong></td>
+                <td>[Totale IVA] €</td>
+            </tr>
+            <tr>
+                <td class="label"><strong>Totale Documento:</strong></td>
+                <td>[Totale Documento] €</td>
+            </tr>
+        </table>
+
+        <div class="note">
+            <p><strong>Note:</strong> Offerta non impegnativa soggetta a possibili variazioni. Si consiglia di verificare telefonicamente o per email l'effettiva disponibilità del materiale e le tempistiche di consegna. La registrazione dei moduli ai consorzi di smaltimento non è compresa nella fornitura se non menzionata.</p>
+            <p><strong>Pagamento:</strong> Bonifico Bancario</p>
+            <p>La nostra azienda non è responsabile di indicazioni per il dimensionamento contenuto nelle offerte commerciali.</p>
+        </div>
+
+        <div class="footer">
+            <p>Azienda Fotovoltaica S.R.L | Via Esempio, 123 - 00100 Roma (RM) - Italy</p>
+            <p>Tel. 0123456789 / 0987654321 | Email: info@azienda.it | Pec: azienda@pec.it</p>
+            <p>P.IVA 01234567890 | Reg. imprese 123456</p>
+        </div>
+    </div>
+</body>
+</html>
