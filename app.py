@@ -11,6 +11,7 @@ from datetime import datetime
 import locale
 import random
 
+from utilities import get_data
 from docx_to_pdf import convert_docx_to_pdf
 
 # Configurazione della pagina
@@ -21,10 +22,10 @@ st.set_page_config(layout="wide")
 #subprocess.run(["sudo", "update-locale"], check=True)
 
 # Imposta la localizzazione italiana
-try:
-    locale.setlocale(locale.LC_TIME, 'it_IT.UTF-8')
-except locale.Error:
-    st.warning("La localizzazione 'it_IT.UTF-8' non è disponibile. Verrà utilizzata la localizzazione predefinita.")
+#try:
+#    locale.setlocale(locale.LC_TIME, 'it_IT.UTF-8')
+#except locale.Error:
+#    st.warning("La localizzazione 'it_IT.UTF-8' non è disponibile. Verrà utilizzata la localizzazione predefinita.")
 
 # Credenziali salvate in locale
 USERNAME = "admin"
@@ -66,13 +67,14 @@ def extract_relevant_fields(df, soggetto, date_format):
     subset = df[df['Codice_Soggetto'] == soggetto].fillna(' ')
     contracts = "/".join(subset['CONTRATTO'].astype(str).unique())
 
-    if date_format == "alfanumerico":
-        data_odierna = datetime.now().strftime("%d %B %Y")
-    elif date_format == "numerico":
-        data_odierna = datetime.now().strftime("%d/%m/%Y")
-    else:
-        data_odierna = datetime.now().strftime("%d %B %Y")
+    #if date_format == "alfanumerico":
+    #    data_odierna = datetime.now().strftime("%d %B %Y")
+    #elif date_format == "numerico":
+    #    data_odierna = datetime.now().strftime("%d/%m/%Y")
+    #else:
+    #    data_odierna = datetime.now().strftime("%d %B %Y")
 
+    data_odierna = get_data()[date_format]
     data_odierna = f" {data_odierna}"
 
     replacements = {

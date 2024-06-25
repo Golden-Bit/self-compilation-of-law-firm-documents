@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import datetime
 
 
 def find_executable_by_partial_path(start_directory, partial_path):
@@ -28,3 +29,30 @@ def find_executable_by_partial_path(start_directory, partial_path):
 #search_directory = "C:\\"  # Root directory (use with caution)
 #partial_path = "soffice.exe"
 #find_executable_by_partial_path(search_directory, partial_path)
+
+
+def get_data():
+    # Mappatura per i giorni della settimana e i mesi in italiano
+    giorni_settimana = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica']
+    mesi_anno = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre',
+                 'Ottobre', 'Novembre', 'Dicembre']
+
+    # Genera la data attuale
+    current_date = datetime.datetime.now()
+
+    # Estrai i componenti della data
+    giorno_settimana = giorni_settimana[current_date.weekday()]
+    giorno = current_date.day
+    mese = mesi_anno[current_date.month - 1]
+    anno = current_date.year
+
+    # Formatta la data manualmente
+    # formatted_date_full = f'{giorno_settimana}, {giorno} {mese} {anno}'
+    # formatted_date_short = f'{giorno:02d}/{current_date.month:02d}/{anno}'
+
+    formatted_date_full = f'{giorno} {mese} {anno}'
+    formatted_date_short = f'{giorno:02d}/{current_date.month:02d}/{anno}'
+
+    return {"alfanumerico": formatted_date_full, "numerico": formatted_date_short}
+
+
