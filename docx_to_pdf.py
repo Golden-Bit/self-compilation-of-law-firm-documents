@@ -4,10 +4,10 @@ import subprocess
 from utilities import find_executable_by_partial_path
 
 
-search_directory = "C:\\"  # Root directory (use with caution)
-partial_path = "soffice.exe"
-libreoffice_path = find_executable_by_partial_path(search_directory, partial_path)
-#libreoffice_path = "libreoffice"
+#search_directory = "C:\\"  # Root directory (use with caution)
+#partial_path = "soffice.exe"
+#libreoffice_path = find_executable_by_partial_path(search_directory, partial_path)
+libreoffice_path = "libreoffice"
 
 def convert_docx_to_pdf(input_path, output_path):
     """
