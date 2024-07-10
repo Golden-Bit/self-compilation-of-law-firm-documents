@@ -15,6 +15,9 @@ import random
 from utilities import get_data
 from docx_to_pdf import convert_docx_to_pdf
 
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
+
 # Configurazione della pagina
 st.set_page_config(layout="wide")
 
@@ -28,26 +31,27 @@ st.set_page_config(layout="wide")
 #except locale.Error:
 #    st.warning("La localizzazione 'it_IT.UTF-8' non è disponibile. Verrà utilizzata la localizzazione predefinita.")
 
-# Credenziali salvate in locale
-os.environ['USERNAME_HASH'] = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"
-os.environ['PASSWORD_HASH'] = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"
+# Inizializzazione della connessione MongoDB solo una volta e memorizzazione nella sessione
+if 'mongo_client' not in st.session_state:
+    uri = "mongodb+srv://simonesansalone777:xl1TbIvhlpgi1c09@studio-legal.dx2t3qa.mongodb.net/?retryWrites=true&w=majority&appName=studio-legal"
+    st.session_state.mongo_client = MongoClient(uri, server_api=ServerApi('1'))
 
+db = st.session_state.mongo_client['db_v0']  # Modifica con il nome del tuo database
+users = db['users']  # Modifica con il nome della tua collezione
+# Inizializzazione dei valori di default per username e password
+#def initialize_default_credentials():
+#    default_hash = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"
+#    if users.count_documents({"_id": "username"}) == 0:
+#        users.insert_one({"_id": "username", "username": "admin", "password_hash": default_hash})
+#    if users.count_documents({"_id": "password"}) == 0:
+#        users.insert_one({"_id": "password", "username": "admin", "password_hash": default_hash})
+#
+# Esegui la funzione di inizializzazione all'avvio
+#initialize_default_credentials()
 
 def standardize(txt):
     txt = str(txt).strip().removesuffix(".0")
     return txt
-
-
-# Funzione di login
-def login(username, password):
-
-    username_hash_object = hashlib.sha256(username.encode())  # Codifica la stringa in byte
-    username_hex_dig = username_hash_object.hexdigest()
-
-    password_hash_object = hashlib.sha256(password.encode())  # Codifica la stringa in byte
-    password_hex_dig = password_hash_object.hexdigest()
-
-    return username_hex_dig == os.environ['USERNAME_HASH'] and password_hex_dig == os.environ['PASSWORD_HASH']
 
 
 # CSS personalizzato per nascondere le icone dei collegamenti
@@ -239,18 +243,85 @@ def analyze_document(doc_path):
     return placeholders
 
 
-# Pagina di login separata
+# Funzione per ottenere l'hash della password
+def get_password_hash(password):
+    return hashlib.sha256(password.encode()).hexdigest()
+
+# Inizializzazione dei valori di default per username e password
+def initialize_default_credentials():
+    default_hash = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"
+    if users.count_documents({"_id": "username"}) == 0:
+        users.insert_one({"_id": "username", "username": "admin", "password_hash": default_hash})
+    if users.count_documents({"_id": "password"}) == 0:
+        users.insert_one({"_id": "password", "username": "admin", "password_hash": default_hash})
+
+# Esegui la funzione di inizializzazione all'avvio
+initialize_default_credentials()
+
+# Funzione di login
+def login(username, password):
+    user = users.find_one({"username": username})
+    print(user)
+    print(user['password_hash'])
+    if user and user['password_hash'] == get_password_hash(password):
+        print("True")
+        return True
+    return False
+
+# Funzione di reset della password
+def reset_password(username, old_password, new_password, confirm_password):
+    if new_password != confirm_password:
+        return False, "Le nuove password non corrispondono."
+    if not login(username, old_password):
+        return False, "La password attuale non è corretta."
+    new_password_hash = get_password_hash(new_password)
+    users.update_one({"username": username}, {"$set": {"password_hash": new_password_hash}})
+    return True, "Password aggiornata con successo."
+
+# Mostra la pagina di login
 def show_login_page():
     st.title("Login")
-    username = st.text_input("Username")
-    password = st.text_input("Password", type="password")
-    if st.button("Login"):
-        if login(username, password):
-            st.session_state['logged_in'] = True
-            st.experimental_rerun()
-        else:
-            st.error("Username o password errati")
+    with st.form(key='login_form'):
+        username = st.text_input("Username", key="login_username")
+        password = st.text_input("Password", type="password", key="login_password")
+        login_button = st.form_submit_button("Login", use_container_width=True)
+        reset_password_button = st.form_submit_button("Reset Password", use_container_width=True)
 
+        if login_button:
+            if login(username, password):
+                st.session_state['logged_in'] = True
+                st.session_state['page'] = 'main_page'
+                st.experimental_rerun()
+            else:
+                st.error("Username o password errati")
+
+        if reset_password_button:
+            st.session_state['page'] = 'reset'
+            st.experimental_rerun()
+
+# Mostra la pagina di reset della password
+def show_reset_password_page():
+    st.title("Reset Password")
+    with st.form(key='reset_password_form'):
+        username = st.text_input("Username", key="reset_username")
+        old_password = st.text_input("Vecchia Password", type="password", key="old_password")
+        new_password = st.text_input("Nuova Password", type="password", key="new_password")
+        confirm_password = st.text_input("Conferma Nuova Password", type="password", key="confirm_password")
+        submit_button = st.form_submit_button("Conferma cambio password", use_container_width=True)
+        back_to_login_button = st.form_submit_button("Torna alla Login", use_container_width=True)
+
+        if submit_button:
+            success, message = reset_password(username, old_password, new_password, confirm_password)
+            if success:
+                st.success(message)
+                st.session_state['logged_in'] = False
+                st.session_state['page'] = 'login'
+            else:
+                st.error(message)
+
+        if back_to_login_button:
+            st.session_state['page'] = 'login'
+            st.experimental_rerun()
 
 # Pagina principale
 def show_main_page(doc_path):
@@ -398,7 +469,8 @@ def generate_all_documents(df_anagrafiche, df_fatture, df_pratiche, doc_path, da
             except Exception as e:
                 st.error(f"Errore per il soggetto {soggetto}: {e}")
 
-            progress_bar.progress((i + 1) / num_soggetti)
+            progress_bar.progress(value=(i + 1) / num_soggetti,
+                                  text=f"{(i + 1)} / {num_soggetti}")
 
     zip_buffer.seek(0)
     st.download_button(
@@ -412,8 +484,13 @@ def generate_all_documents(df_anagrafiche, df_fatture, df_pratiche, doc_path, da
 # Percorso del documento
 doc_path = "input_data/TemplateLetteraDiffida.docx"
 
-# Gestione dello stato di login
-if 'logged_in' not in st.session_state:
+# Gestione delle pagine
+if 'page' not in st.session_state:
+    st.session_state['page'] = 'login'
+
+if st.session_state['page'] == 'login':
     show_login_page()
-else:
+elif st.session_state['page'] == 'reset':
+    show_reset_password_page()
+elif st.session_state['page'] == 'main_page':
     show_main_page(doc_path)
