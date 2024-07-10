@@ -60,8 +60,8 @@ def genera_dizionario_soggetti(df1, df2, df3):
             'Codice_Soggetto': row.get('Codice_Soggetto')
         }
         aggiorna_soggetto(soggetti_dict, keys, info)
-        print("CAP S1:" + str(row.get('Cap_Spedizione')))
-        print("CAP S2:" + str(row.get('Cap_Fornitura')))
+        #print("CAP S1:" + str(row.get('Cap_Spedizione')))
+        #print("CAP S2:" + str(row.get('Cap_Fornitura')))
 
     for index, row in df2.iterrows():
         keys = []
@@ -82,7 +82,7 @@ def genera_dizionario_soggetti(df1, df2, df3):
             'Codice_Soggetto': row.get('BPartner')
         }
         aggiorna_soggetto(soggetti_dict, keys, info)
-        print("CAP F2:" + str(row.get('Ind. di fatturaz. - CAP')))
+        #print("CAP F2:" + str(row.get('Ind. di fatturaz. - CAP')))
 
     for index, row in df3.iterrows():
         keys = []

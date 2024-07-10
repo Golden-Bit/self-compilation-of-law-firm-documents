@@ -1,4 +1,5 @@
 import hashlib
+import json
 import os
 import subprocess
 import time
@@ -94,15 +95,15 @@ def extract_relevant_fields(df, soggetto, date_format):
         '[Indirizzo_Fornitura]': subset['Indirizzo_Fornitura'].iloc[0],
         '[Cap_Fornitura]': subset['Cap_Fornitura'].iloc[0],
         '[Comune_Fornitura]': subset['Comune_Fornitura'].iloc[0],
-        '[Provincia_Fornitura]': subset['Provincia_Fornitura'].iloc[0],
+        '[Provincia_Fornitura]': str(subset['Provincia_Fornitura'].iloc[0]),
         'IND_S': subset['Indirizzo_Spedizione'].iloc[0] if 'Indirizzo_Spedizione' in subset.columns else
         subset['Indirizzo_Fornitura'].iloc[0],
         'CAP_S': subset['Cap_Spedizione'].iloc[0] if 'Cap_Spedizione' in subset.columns else 0000,
         # subset['Cap_Fornitura'].iloc[0],
         'COM_S': subset['Comune_Spedizione'].iloc[0] if 'Comune_Spedizione' in subset.columns else
         subset['Comune_Fornitura'].iloc[0],
-        'PRO_S': subset['Provincia_Spedizione'].iloc[0] if 'Provincia_Spedizione' in subset.columns else
-        subset['Provincia_Fornitura'].iloc[0],
+        'PRO_S': str(subset['Provincia_Spedizione'].iloc[0]) if 'Provincia_Spedizione' in subset.columns else
+        str(subset['Provincia_Fornitura'].iloc[0]),
         '[Email_Soggetto]': subset['Email_Soggetto'].iloc[0] if 'Email_Soggetto' in subset.columns else ' ',
         '[Pec_Soggetto]': subset['Pec_Soggetto'].iloc[0] if 'Pec_Soggetto' in subset.columns else ' ',
         '[CONTRATTO]': contracts,
@@ -111,6 +112,10 @@ def extract_relevant_fields(df, soggetto, date_format):
         '[Residuo ad oggi]': ' ',  # Placeholder
         'DATA': data_odierna,  # Data odierna formattata
     }
+
+    replacements["PRO_S"] = replacements["PRO_S"] if replacements["PRO_S"].strip() else "NA"
+    replacements["[Provincia_Fornitura]"] = replacements["[Provincia_Fornitura]"] if (
+        replacements["[Provincia_Fornitura]"].strip()) else "NA"
 
     return replacements
 
@@ -431,6 +436,10 @@ def generate_all_documents(df_anagrafiche, df_fatture, df_pratiche, doc_path, da
                 time_2 = time.time()
                 delta_1 = time_2 - time_1
                 #print(f"delta_1: {delta_1}")
+
+                print("#" * 119)
+                print(replacements)
+                print("#" * 119)
 
                 time_3 = time.time()
                 output = update_document(doc_path, replacements, table_rows)
