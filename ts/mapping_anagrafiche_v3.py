@@ -141,7 +141,7 @@ def converti_in_csv(soggetti_dict):
             'Annotazioni': f"Numero affido: {soggetto.get('Numero affido', '')}",
             'Luogo di nascita': '',
             'Data di nascita': '',
-            'Codice b2b': '', #soggetto.get('Codice_Soggetto', ''),
+            'Codice b2b': soggetto.get('Codice_Soggetto', ''),
             'Tipo identificazione': '',
             'Tipo documento': '',
             'Numero documento': '',
