@@ -13,6 +13,7 @@ from datetime import datetime
 import locale
 import random
 
+from ts.app import estrai_anagrafiche
 from utilities import get_data
 from docx_to_pdf import convert_docx_to_pdf
 
@@ -328,6 +329,7 @@ def show_reset_password_page():
             st.session_state['page'] = 'login'
             st.experimental_rerun()
 
+
 # Pagina principale
 def show_main_page(doc_path):
     st.title('Studio Carotenuto - Portale Automazione')
@@ -356,13 +358,13 @@ def show_main_page(doc_path):
             selected_soggetto = st.selectbox('Seleziona il Codice Soggetto', soggetti)
             st.markdown("---")
 
-            if st.button('Genera Documento'):
+            if st.button('Genera Documento', use_container_width=True):
                 generate_single_document(selected_soggetto, df_anagrafiche, df_fatture, df_pratiche, doc_path,
                                          date_format_option)
 
         elif option == 'Tutti i soggetti':
             st.markdown("---")
-            if st.button('Genera Documenti'):
+            if st.button('Genera Documenti', use_container_width=True):
                 generate_all_documents(df_anagrafiche, df_fatture, df_pratiche, doc_path, date_format_option)
 
 
@@ -394,14 +396,16 @@ def generate_single_document(soggetto, df_anagrafiche, df_fatture, df_pratiche, 
             label="Scarica il documento DOCX",
             data=output,
             file_name=docx_filename,
-            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            use_container_width=True
         )
 
         st.download_button(
             label="Scarica il documento PDF",
             data=pdf_output,
             file_name=pdf_filename,
-            mime="application/pdf"
+            mime="application/pdf",
+            use_container_width=True
         )
 
         os.remove(docx_filename)
@@ -486,7 +490,8 @@ def generate_all_documents(df_anagrafiche, df_fatture, df_pratiche, doc_path, da
         label="Scarica tutti i documenti",
         data=zip_buffer,
         file_name="Lettere_Diffida.zip",
-        mime="application/zip"
+        mime="application/zip",
+        use_container_width=True
     )
 
 
@@ -502,4 +507,8 @@ if st.session_state['page'] == 'login':
 elif st.session_state['page'] == 'reset':
     show_reset_password_page()
 elif st.session_state['page'] == 'main_page':
-    show_main_page(doc_path)
+    tab1, tab2 = st.tabs(["Generatore Lettere", "Estrattore Anagrafiche"])
+    with tab1:
+        show_main_page(doc_path)
+    with tab2:
+        estrai_anagrafiche()

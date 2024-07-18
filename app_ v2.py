@@ -318,14 +318,16 @@ def generate_single_document(soggetto, df_anagrafiche, df_fatture, df_pratiche, 
             label="Scarica il documento DOCX",
             data=output,
             file_name=docx_filename,
-            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            use_container_width=True
         )
 
         st.download_button(
             label="Scarica il documento PDF",
             data=pdf_output,
             file_name=pdf_filename,
-            mime="application/pdf"
+            mime="application/pdf",
+            use_container_width=True
         )
 
         os.remove(docx_filename)
