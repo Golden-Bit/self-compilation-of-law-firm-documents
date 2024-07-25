@@ -141,9 +141,9 @@ def extract_table_rows(identifier, df_fatture):
         table_row = {
             'Contratto': row['Contratto'],
             'Riferimento': row['N. documento'],
-            'Data reg.': row['Data reg.'],
-            'Scad.netto': row['Scad.netto'],
-            'Importo sollecitabile': row['Importo sollecitabile']
+            'Data reg.': str(row['Data reg.']),
+            'Scad.netto': str(row['Scad.netto']),
+            'Importo sollecitabile': str(row['Importo sollecitabile'])
         }
         table_rows.append(table_row)
 
@@ -370,7 +370,7 @@ def show_main_page(doc_path):
 
 # Genera un singolo documento
 def generate_single_document(soggetto, df_anagrafiche, df_fatture, df_pratiche, doc_path, date_format_option):
-    try:
+    if True: #try:
         replacements = extract_relevant_fields(df_anagrafiche, soggetto, date_format_option)
         identifier = get_identifier(df_anagrafiche[df_anagrafiche['Codice_Soggetto'] == soggetto].iloc[0])
         residuo_ad_oggi = get_residuo_ad_oggi(identifier, df_pratiche)
@@ -411,8 +411,8 @@ def generate_single_document(soggetto, df_anagrafiche, df_fatture, df_pratiche, 
         os.remove(docx_filename)
         os.remove(pdf_filename)
 
-    except Exception as e:
-        st.error(f"Errore: {e}")
+    #except Exception as e:
+    #    st.error(f"Errore: {e}")
 
 
 # Genera documenti per tutti i soggetti
