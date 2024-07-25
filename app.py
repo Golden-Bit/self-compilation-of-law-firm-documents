@@ -141,8 +141,8 @@ def extract_table_rows(identifier, df_fatture):
         table_row = {
             'Contratto': row['Contratto'],
             'Riferimento': row['N. documento'],
-            'Data reg.': str(row['Data reg.']),
-            'Scad.netto': str(row['Scad.netto']),
+            'Data reg.': str(row['Data reg.']).split(" ")[0],
+            'Scad.netto': str(row['Scad.netto']).split(" ")[0],
             'Importo sollecitabile': str(row['Importo sollecitabile'])
         }
         table_rows.append(table_row)
