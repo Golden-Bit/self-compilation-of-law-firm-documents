@@ -3,7 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 import time
 
-def login_to_site_and_create_pratica(username, password):
+def login_to_site(username, password):
     # Path to the ChromeDriver
     service = Service('C:\\Users\\Golden Bit\\Downloads\\chromedriver-win64\\chromedriver.exe')
 
@@ -29,16 +29,16 @@ def login_to_site_and_create_pratica(username, password):
         # Wait for the page to load
         time.sleep(5)
 
-        # Navigate to the "Pratiche" page
-        pratiche_link = driver.find_element(By.XPATH, "//a[@href='/archive/archive']")
-        pratiche_link.click()
+        # Navigate to the "Anagrafiche" page
+        anagrafiche_link = driver.find_element(By.XPATH, "//a[@href='/anagrafiche']")
+        anagrafiche_link.click()
 
         # Wait for the page to load
         time.sleep(5)
 
-        # Click the button to create a new "Pratica"
-        new_pratica_button = driver.find_element(By.XPATH, "//a[@href='#' and contains(@class, 'btn-primary') and contains(@onclick, 'insertFile()')]")
-        new_pratica_button.click()
+        # Click the button to create a new "Anagrafica"
+        new_anagrafica_button = driver.find_element(By.XPATH, "//a[@href='/anagrafiche/update' and contains(@class, 'btn-primary')]")
+        new_anagrafica_button.click()
 
         # Wait for 10 seconds
         time.sleep(10)
@@ -50,8 +50,9 @@ def login_to_site_and_create_pratica(username, password):
 
 if __name__ == "__main__":
     # Request username and password from the user
-    user_username = "fabiana" #input("Enter your username: ")
-    user_password = "Faby0311@" #input("Enter your password: ")
+    user_username = "fabiana"  # input("Enter your username: ")
+    user_password = "Faby0311@"  # input("Enter your password: ")
+    #search_denominazione = "abc"  # input("Enter the denominazione to search: ")
 
-    # Perform login and create a new pratica
-    login_to_site_and_create_pratica(user_username, user_password)
+    # Perform login
+    login_to_site(user_username, user_password)

@@ -507,8 +507,9 @@ if st.session_state['page'] == 'login':
 elif st.session_state['page'] == 'reset':
     show_reset_password_page()
 elif st.session_state['page'] == 'main_page':
-    tab1, tab2 = st.tabs(["Generatore Lettere", "Estrattore Anagrafiche"])
-    with tab1:
-        show_main_page(doc_path)
-    with tab2:
-        estrai_anagrafiche()
+    #tab1, tab2 = st.tabs(["Generatore Lettere", "Impostazioni"])
+    #tab1 = st.tabs(["Generatore Lettere"])
+    #with tab1:
+    show_main_page(doc_path)
+    #with tab2:
+    #    estrai_anagrafiche()

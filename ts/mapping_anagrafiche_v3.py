@@ -4,7 +4,10 @@ import pandas as pd
 
 # Funzione per processare i file caricati
 def process_file(file):
-    file_type = file.name.split('.')[-1]
+    if isinstance(file, str):
+        file_type = file.split('.')[-1]
+    else:
+        file_type = file.name.split('.')[-1]
     if file_type == 'csv':
         df = pd.read_csv(file, delimiter=';', on_bad_lines='skip').fillna('')
     elif file_type == 'xlsx':
@@ -26,10 +29,13 @@ def aggiorna_soggetto(soggetti_dict, keys, info):
                 'Cap_Spedizione': '',
                 'Comune_Spedizione': '',
                 'Telefono_Soggetto': '',
+                'Telefono_Secondario': '',
                 'Email_Soggetto': '',
                 'Pec_Soggetto': '',
                 'Codice_Soggetto': '',
-                'Numero affido': ''
+                'Numero affido': '',
+                'Data affido': '',
+                'Residuo ad oggi': ''
             }
         for k, v in info.items():
             if v and not soggetti_dict[key].get(k):
@@ -55,6 +61,7 @@ def genera_dizionario_soggetti(df1, df2, df3):
             'Cap_Spedizione': str(row.get('Cap_Spedizione')),
             'Comune_Spedizione': row.get('Comune_Spedizione'),
             'Telefono_Soggetto': str(row.get('Telefono_Soggetto')).removesuffix(".0"),
+            'Telefono_Secondario': str(row.get('Telefono_Secondario')).removesuffix(".0"),
             'Email_Soggetto': row.get('Email_Soggetto'),
             'Pec_Soggetto': row.get('Pec_Soggetto'),
             'Codice_Soggetto': str(row.get('Codice_Soggetto'))
@@ -75,6 +82,7 @@ def genera_dizionario_soggetti(df1, df2, df3):
             'Cap_Spedizione': str(row.get('Ind. di fatturaz. - CAP')),
             'Comune_Spedizione': row.get('Ind. di fatturaz. - Localit?'),
             'Telefono_Soggetto': str(row.get('Numero telefonico')).removesuffix(".0"),
+            'Telefono_Secondario': str(row.get('Telefono 2')).removesuffix(".0"),
             'Email_Soggetto': row.get('Email'),
             'Pec_Soggetto': row.get('PEC'),
             'Codice_Soggetto': str(row.get('BPartner'))
@@ -93,7 +101,9 @@ def genera_dizionario_soggetti(df1, df2, df3):
             'Codice_Fiscale': row.get('Codice fiscale'),
             'Telefono_Soggetto': str(row.get('Telefono primario')).removesuffix(".0"),
             'Codice_Soggetto': str(row.get('Soggetto')),
-            'Numero affido': row.get('Numero affido')
+            'Numero affido': row.get('Numero affido'),
+            'Data affido': str(row.get('Data affido')),
+            'Residuo ad oggi': row.get('Residuo ad oggi')
         }
         aggiorna_soggetto(soggetti_dict, keys, info)
 
@@ -134,7 +144,7 @@ def converti_in_csv(soggetti_dict):
             'C.F.': soggetto.get('Codice_Fiscale', ''),
             'Partita iva': soggetto.get('Partita_Iva', ''),
             'Telefono': soggetto.get('Telefono_Soggetto', ''),
-            'Cellulare': '',
+            'Cellulare': soggetto.get('Telefono_Secondario', ''),
             'Tipologia': 'Non specificata',  # Default value
             'Email': soggetto.get('Email_Soggetto', ''),
             'PEC': soggetto.get('Pec_Soggetto', ''),
@@ -155,6 +165,8 @@ def converti_in_csv(soggetti_dict):
             'Iban': ''
         }
         righe_csv.append(riga)
+
+        #print(json.dumps(soggetto, indent=2))
 
     # Creazione del DataFrame
     df_csv = pd.DataFrame(righe_csv, columns=colonne)
@@ -186,6 +198,6 @@ if __name__ == "__main__":
 
     # Convertire i dati in un file CSV
     output_csv_path = 'dati_tutti_soggetti.csv'
-    converti_in_csv(dati_tutti_soggetti, output_csv_path)
+    converti_in_csv(dati_tutti_soggetti)#, output_csv_path)
 
     print(f"Dati di tutti i soggetti salvati in '{output_csv_path}'.")

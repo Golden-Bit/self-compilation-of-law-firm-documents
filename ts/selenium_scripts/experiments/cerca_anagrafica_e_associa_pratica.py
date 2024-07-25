@@ -18,7 +18,7 @@ dati_pratica = {
     "valore": "10000"
 }
 
-def login_to_site_and_create_pratica(username, password):
+def login_and_create_pratica(username, password, denominazione):
     # Path to the ChromeDriver
     service = Service('C:\\Users\\Golden Bit\\Downloads\\chromedriver-win64\\chromedriver.exe')
 
@@ -44,16 +44,38 @@ def login_to_site_and_create_pratica(username, password):
         # Wait for the page to load
         time.sleep(5)
 
-        # Navigate to the "Pratiche" page
-        pratiche_link = driver.find_element(By.XPATH, "//a[@href='/archive/archive']")
-        pratiche_link.click()
+        # Navigate to the "Anagrafiche" page
+        anagrafiche_link = driver.find_element(By.XPATH, "//a[@href='/anagrafiche']")
+        anagrafiche_link.click()
 
         # Wait for the page to load
         time.sleep(5)
 
-        # Click the button to create a new "Pratica"
-        new_pratica_button = driver.find_element(By.XPATH, "//a[@href='#' and contains(@class, 'btn-primary') and contains(@onclick, 'insertFile()')]")
-        new_pratica_button.click()
+        # Insert the search term in the search field
+        search_field = driver.find_element(By.ID, "searchField")
+        search_field.send_keys(denominazione)
+
+        # Click the search button
+        search_button = driver.find_element(By.ID, "searchButton")
+        search_button.click()
+
+        # Wait for the search results to load
+        time.sleep(5)
+
+        # Find the first result row
+        results = driver.find_elements(By.XPATH, "//tr[contains(@class, 'soggetti-row')]")
+        for result in results:
+            denominazione_result = result.find_element(By.XPATH, ".//td[2]/div").text
+            if denominazione_result == denominazione:
+                result.click()
+                break
+
+        # Wait for the anagrafica details to load
+        time.sleep(5)
+
+        # Click the "Nuova Pratica" button
+        nuova_pratica_button = driver.find_element(By.ID, "btnNuovaPratica")
+        nuova_pratica_button.click()
 
         # Wait for the popup to load
         time.sleep(3)
@@ -68,24 +90,25 @@ def login_to_site_and_create_pratica(username, password):
         driver.find_element(By.ID, "statopratica").send_keys(dati_pratica["stato"])
         #driver.find_element(By.ID, "dataapertura").send_keys(dati_pratica["data_apertura"])
         driver.find_element(By.ID, "tipoValore").send_keys(dati_pratica["tipo_valore"])
-        driver.find_element(By.ID, "valore").send_keys(dati_pratica["valore"])
+        #driver.find_element(By.ID, "valore").send_keys(dati_pratica["valore"])
 
         # Click the "Conferma" button
         conferma_button = driver.find_element(By.ID, "saveFileButton")
         conferma_button.click()
 
         # Wait for 10 seconds
-        #time.sleep(10)
-        input("...")
+        time.sleep(10)
 
     finally:
         # Close the browser
         driver.quit()
 
+
 if __name__ == "__main__":
-    # Request username and password from the user
-    user_username = "fabiana" #input("Enter your username: ")
-    user_password = "Faby0311@" #input("Enter your password: ")
+    # Request username, password, and denominazione from the user
+    user_username = "fabiana"  # input("Enter your username: ")
+    user_password = "Faby0311@"  # input("Enter your password: ")
+    search_denominazione = "abc"  # input("Enter the denominazione to search: ")
 
     # Perform login and create a new pratica
-    login_to_site_and_create_pratica(user_username, user_password)
+    login_and_create_pratica(user_username, user_password, search_denominazione)
