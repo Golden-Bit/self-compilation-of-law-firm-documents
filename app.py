@@ -13,7 +13,7 @@ from datetime import datetime
 import locale
 import random
 
-from ts.app import estrai_anagrafiche
+#from ts.app import estrai_anagrafiche
 from utilities import get_data
 from docx_to_pdf import convert_docx_to_pdf
 
