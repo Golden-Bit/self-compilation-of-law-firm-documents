@@ -110,7 +110,7 @@ def extract_relevant_fields(df, soggetto, date_format):
         '[Pec_Soggetto]': subset['Pec_Soggetto'].iloc[0] if 'Pec_Soggetto' in subset.columns else ' ',
         '[CONTRATTO]': contracts,
         '[Codice_Commerciale]': subset['Codice_Commerciale'].iloc[0],
-        '[Codice_Soggetto]': soggetto,
+        '[Codice_Soggetto]': str(soggetto).removesuffix(".0"),
         '[Residuo ad oggi]': ' ',  # Placeholder
         'DATA': data_odierna,  # Data odierna formattata
     }
