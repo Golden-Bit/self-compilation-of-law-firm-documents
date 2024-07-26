@@ -1,3 +1,4 @@
+import copy
 import hashlib
 import json
 import os
@@ -355,9 +356,9 @@ def show_main_page(doc_path):
 
         if option == 'Singolo soggetto':
             soggetti = df_anagrafiche['Codice_Soggetto'].unique()
-            soggetti = list(soggetti)
-            soggetti = [str(soggetto).removesuffix('.0') for soggetto in soggetti]
-            selected_soggetto = st.selectbox('Seleziona il Codice Soggetto', soggetti)
+            soggetti_ = copy.deepcopy(list(soggetti))
+            soggetti_ = [str(soggetto).removesuffix('.0') for soggetto in soggetti_]
+            selected_soggetto = st.selectbox('Seleziona il Codice Soggetto', soggetti_)
             st.markdown("---")
 
             if st.button('Genera Documento', use_container_width=True):
