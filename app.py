@@ -356,7 +356,7 @@ def show_main_page(doc_path):
         if option == 'Singolo soggetto':
             soggetti = df_anagrafiche['Codice_Soggetto'].unique()
             soggetti = list(soggetti)
-            soggetti = [soggetto.removesuffix(".0") for soggetto in soggetti]
+            soggetti = [int(soggetto) for soggetto in soggetti]
             selected_soggetto = st.selectbox('Seleziona il Codice Soggetto', soggetti)
             st.markdown("---")
 
