@@ -359,6 +359,7 @@ def show_main_page(doc_path):
             soggetti_ = copy.deepcopy(list(soggetti))
             soggetti_ = [str(soggetto).removesuffix('.0') for soggetto in soggetti_]
             selected_soggetto = st.selectbox('Seleziona il Codice Soggetto', soggetti_)
+            selected_soggetto = float(selected_soggetto) if selected_soggetto != ' ' else ' '
             st.markdown("---")
 
             if st.button('Genera Documento', use_container_width=True):
