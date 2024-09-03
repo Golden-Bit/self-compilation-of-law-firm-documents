@@ -20,7 +20,7 @@ import tempfile
 #from ts.selenium_scripts.crea_pratiche_e_associa_anagrafiche_ import importa_pratiche
 from selenium_scripts.crea_pratiche_e_associa_anagrafiche import importa_pratiche
 #from ts.selenium_scripts.cerca_anagrafica_e_associa_file import importa_documenti
-from selenium_scripts.cerca_pratiche_e_associa_file import importa_documenti
+from selenium_scripts.cerca_anagrafica_e_associa_file import importa_documenti
 
 
 st.set_page_config(layout="wide")

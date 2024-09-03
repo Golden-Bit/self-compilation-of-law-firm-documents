@@ -1,6 +1,7 @@
 import copy
 import hashlib
 import json
+import logging
 import os
 import subprocess
 import time
@@ -421,6 +422,9 @@ def generate_single_document(soggetto, df_anagrafiche, df_fatture, df_pratiche, 
 
 # Genera documenti per tutti i soggetti
 def generate_all_documents(df_anagrafiche, df_fatture, df_pratiche, doc_path, date_format_option):
+    # Configurazione di base per il logging
+    logging.basicConfig(filename='errori_generazione_lettere.log', level=logging.ERROR)
+
     zip_buffer = BytesIO()
     with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED) as zip_file:
         soggetti = df_anagrafiche['Codice_Soggetto'].unique()
@@ -484,7 +488,10 @@ def generate_all_documents(df_anagrafiche, df_fatture, df_pratiche, doc_path, da
                 os.remove(pdf_filename)
 
             except Exception as e:
-                st.error(f"Errore per il soggetto {soggetto}: {e}")
+                error_message = f"Errore per il soggetto {soggetto}: {e}"
+                st.error(error_message)
+                logging.error(error_message)
+                st.error(error_message)
 
             progress_bar.progress(value=(i + 1) / num_soggetti,
                                   text=f"{(i + 1)} / {num_soggetti}")

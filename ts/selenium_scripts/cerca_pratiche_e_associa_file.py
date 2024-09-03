@@ -1,4 +1,5 @@
 import json
+import logging
 from typing import List, Tuple
 
 from selenium import webdriver
@@ -42,15 +43,15 @@ def login_to_site(driver, username, password):
             continue
 
     # Wait for the page to load
-    #time.sleep(5)
+    # time.sleep(5)
 
 
-def navigate_to_anagrafiche(driver):
+def navigate_to_pratiche(driver):
 
     while True:
         try:
             # Navigate to the "Anagrafiche" page
-            anagrafiche_link = driver.find_element(By.XPATH, "//a[@href='/anagrafiche']")
+            anagrafiche_link = driver.find_element(By.XPATH, "//a[@href='/archive/archive']")
             anagrafiche_link.click()
             break
         except Exception as e:
@@ -58,7 +59,7 @@ def navigate_to_anagrafiche(driver):
             continue
 
     # Wait for the page to load
-    #time.sleep(5)
+    # time.sleep(5)
 
 
 def search_and_upload_file(driver, denominazione, file_path):
@@ -66,7 +67,7 @@ def search_and_upload_file(driver, denominazione, file_path):
     while True:
         try:
             # Insert the search term in the search field
-            search_field = driver.find_element(By.ID, "searchField")
+            search_field = driver.find_element(By.ID, "counterpart")
             search_field.clear()  # Clear any previous text in the search field
             search_field.send_keys(denominazione)
             break
@@ -76,57 +77,78 @@ def search_and_upload_file(driver, denominazione, file_path):
 
     while True:
         try:
+            # Insert the search term in the search field
+            search_field = driver.find_element(By.ID, "customer")
+            search_field.clear()  # Clear any previous text in the search field
+            search_field.send_keys("SEV SPA")
+            break
+        except Exception as e:
+            print(e)
+            continue
+
+    while True:
+        try:
             # Click the search button
-            search_button = driver.find_element(By.ID, "searchButton")
+            search_button = driver.find_element(By.ID, "archiveSearchButton")
             search_button.click()
             break
         except Exception as e:
             print(e)
             continue
     # Wait for the search results to load
-    #time.sleep(5)
+    # time.sleep(5)
 
     is_clicked = False
     while True:
         try:
             # Find the first result row
             results = driver.find_elements(By.XPATH, "//tr[contains(@class, 'soggetti-row')]")
-            for result in results:
-                denominazione_result = result.find_element(By.XPATH, ".//td[2]/div").text
-                if denominazione_result == denominazione:
-                    result.click()
-                    is_clicked = True
-                    break
+            results[0].click()
+            is_clicked = True
             if is_clicked:
                 break
-            # Wait for the anagrafica details to load
-            #time.sleep(5)
         except Exception as e:
             print(e)
             continue
 
+    # New logic for clicking the link and uploading the file
     while True:
         try:
-            # Locate the file input element and upload the file
-            file_input = driver.find_element(By.CSS_SELECTOR, "input.upload-documents-input[type='file']")
-            file_input.send_keys(file_path)
+            # Click the "Vedi tutti..." link
+            view_all_link = driver.find_element(By.XPATH, "//a[contains(@href, '/archivedocuments/documents')]")
+            view_all_link.click()
             break
         except Exception as e:
             print(e)
             continue
-        #time.sleep(5)
+
+    # Wait for the new page to load
+    # time.sleep(5)
+
+    while True:
+        try:
+            # Click the "Carica sul gestionale" button to trigger the file upload
+            upload_button = driver.find_element(By.ID, "carica_doc_gestionale")
+            upload_input = upload_button.find_element(By.XPATH, ".//input[@type='file']")
+            upload_input.send_keys(file_path)
+            break
+        except Exception as e:
+            print(e)
+            continue
 
     # Wait for the upload to complete
-    #time.sleep(10)
+    # time.sleep(10)
 
 
 def process_denominations_and_files(driver, denominations_and_files):
     for denominazione, file_path in denominations_and_files:
         search_and_upload_file(driver, denominazione, file_path)
-        navigate_to_anagrafiche(driver)  # Navigate back to the "Anagrafiche" page for the next iteration
+        navigate_to_pratiche(driver)  # Navigate back to the "Anagrafiche" page for the next iteration
 
 
 def importa_documenti(denominations_and_files: List[Tuple[str, str]]):
+    # Set up logging
+    logging.basicConfig(filename='importa_documenti_errors.log', level=logging.ERROR)
 
     # Request username and password from the user
     user_username = "fabiana"  # input("Enter your username: ")
@@ -141,10 +163,16 @@ def importa_documenti(denominations_and_files: List[Tuple[str, str]]):
         login_to_site(driver, user_username, user_password)
 
         # Navigate to the "Anagrafiche" page for the first time
-        navigate_to_anagrafiche(driver)
+        navigate_to_pratiche(driver)
 
         # Process each denomination and file pair
-        process_denominations_and_files(driver, denominations_and_files)
+        for denominazione, file_path in denominations_and_files:
+            try:
+                process_denominations_and_files(driver, [(denominazione, file_path)])
+            except Exception as e:
+                error_message = "\n#\n" * 120 + f"Failed to upload document '{file_path}' for '{denominazione}': {str(e)}" + "\n#\n" * 120
+                logging.error(error_message)
+                print(error_message)
 
     finally:
         # Close the browser
@@ -158,8 +186,8 @@ if __name__ == "__main__":
     denominations_and_files = [
         ("abc", "C:\\Users\\Golden Bit\\Desktop\\projects_in_progress\\GoldenProjects\\golden_bit\\repositories\\self-compilation-of-law-firm-documents\\input_data\\TemplateLetteraDiffida.docx"),
         ("def", "C:\\Users\\Golden Bit\\Desktop\\projects_in_progress\\GoldenProjects\\golden_bit\\repositories\\self-compilation-of-law-firm-documents\\input_data\\TemplateLetteraDiffida_.docx"),
-        ("abc","C:\\Users\\Golden Bit\\Desktop\\projects_in_progress\\GoldenProjects\\golden_bit\\repositories\\self-compilation-of-law-firm-documents\\input_data\\TemplateLetteraDiffida.docx"),
-        ("def","C:\\Users\\Golden Bit\\Desktop\\projects_in_progress\\GoldenProjects\\golden_bit\\repositories\\self-compilation-of-law-firm-documents\\input_data\\TemplateLetteraDiffida_.docx")
+        ("abc", "C:\\Users\\Golden Bit\\Desktop\\projects_in_progress\\GoldenProjects\\golden_bit\\repositories\\self-compilation-of-law-firm-documents\\input_data\\TemplateLetteraDiffida.docx"),
+        ("def", "C:\\Users\\Golden Bit\\Desktop\\projects_in_progress\\GoldenProjects\\golden_bit\\repositories\\self-compilation-of-law-firm-documents\\input_data\\TemplateLetteraDiffida_.docx")
     ]
 
     # Request username and password from the user
@@ -175,10 +203,20 @@ if __name__ == "__main__":
         login_to_site(driver, user_username, user_password)
 
         # Navigate to the "Anagrafiche" page for the first time
-        navigate_to_anagrafiche(driver)
+        navigate_to_pratiche(driver)
 
         # Process each denomination and file pair
-        process_denominations_and_files(driver, denominations_and_files)
+        #process_denominations_and_files(driver, denominations_and_files)
+        # Set up logging
+        logging.basicConfig(filename='importa_documenti_errors.log', level=logging.ERROR)
+
+        for denominazione, file_path in denominations_and_files:
+            try:
+                process_denominations_and_files(driver, [(denominazione, file_path)])
+            except Exception as e:
+                error_message = f"Failed to upload document '{file_path}' for '{denominazione}': {str(e)}"
+                logging.error(error_message)
+                print(error_message)
 
     finally:
         # Close the browser
